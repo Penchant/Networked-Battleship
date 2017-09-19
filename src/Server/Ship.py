@@ -76,7 +76,7 @@ class Ship:
                 return False
     def sunk(self):
         print(str(self.hits))
-        return self.hits == self.length
+        return self.hits == 2*self.length
 
     def validate(self):
         # if(self.location[0] != self.location[2] and self.location[1] != self.location[3]):

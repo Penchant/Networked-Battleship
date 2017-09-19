@@ -53,13 +53,13 @@ def run():
     print('running Battleship...')
 
 
-    d = {}
-    with open("Btest.txt") as f:
+    d2 = {}
+    with open("BlankTest.txt") as f:
         x = 0
         y = 0
         for line in f:
             for c in line:
-                d[(x, y)] = c
+                d2[(x, y)] = c
                 y = y + 1
                 if y == 10:
                     break
@@ -67,6 +67,69 @@ def run():
             if x == 10:
                 break
             y = 0
+    print(d2)
+
+
+    boardC = ""
+    cntCheckx = 0
+    while cntCheckx < 10:
+        cntChecky = 0
+        while cntChecky < 10:
+            boardC += (d2[(cntCheckx,cntChecky)])
+            cntChecky = cntChecky + 1
+        boardC += "\n"
+        cntCheckx = cntCheckx + 1
+    print(boardC)
+
+
+
+    d1 = {}
+    with open("Btest.txt") as f:
+        x = 0
+        y = 0
+        for line in f:
+            for c in line:
+                d1[(x, y)] = c
+                y = y + 1
+                if y == 10:
+                    break
+            x = x + 1
+            if x == 10:
+                break
+            y = 0
+    print(d1)
+
+    boardS = ""
+    cntCheckx = 0
+    while cntCheckx < 10:
+        cntChecky = 0
+        while cntChecky < 10:
+            boardS += (d1[(cntCheckx,cntChecky)])
+            cntChecky = cntChecky + 1
+        boardS += "\n"
+        cntCheckx = cntCheckx + 1
+    print(boardS)
+
+
+
+    cntx = 0
+    while cntx < 10:
+        cnty = 0
+        while cnty < 10:
+            if d1[(cntx,cnty)] == "B":
+                print("Found B")
+            elif d1[(cntx,cnty)] == "C":
+                print("Found C")
+            elif d1[(cntx,cnty)] == "D":
+                print("Found D")
+            elif d1[(cntx,cnty)] == "R":
+                print("Found R")
+            elif d1[(cntx,cnty)] == "S":
+                print("Found S")
+            else:
+                print("No ship")
+            cnty = cnty + 1
+        cntx = cntx + 1
 
     httpd.serve_forever()
 

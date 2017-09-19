@@ -16,4 +16,3 @@ if __name__ == '__main__':
     request = requests.post('http://' + str(ip) + ':' + str(port) +'/fire?x=' + str(x) + '&y=' + str(y))
 
     print(request.text)
-    print(requests.)
