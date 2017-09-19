@@ -34,6 +34,25 @@ def run():
     server_address = ('127.0.0.1', 8081)
     httpd = HTTPServer(server_address, testHTTPServer_RequestHandler)
     print('running Server...')
+
+
+    d = {}
+    with open("Btest.txt") as f:
+        x = 0
+        y = 0
+        for line in f:
+            for c in line:
+                d[(x, y)] = c
+                y = y + 1
+                if y == 10:
+                    break
+            x = x + 1
+            if x == 10:
+                break
+            y = 0
+    print(d)
+
     httpd.serve_forever()
+
 
 run()
