@@ -2,7 +2,7 @@
 
 from http.server import BaseHTTPRequestHandler, HTTPServer, SimpleHTTPRequestHandler
 from urllib.parse import urlparse, parse_qsl, parse_qs
-from src.Server.Ship import Ship
+from src.Server.Ship import Ship, ShipType
 
 # HTTPRequestHandler class
 class testHTTPServer_RequestHandler(SimpleHTTPRequestHandler):
@@ -15,25 +15,28 @@ class testHTTPServer_RequestHandler(SimpleHTTPRequestHandler):
         # Doesn't do anything with posted data
         self._set_headers()
         parsed_path = urlparse(self.path)
-        request_id = parsed_path.path
-        query = parse_qsl(self.path)
+        query = parse_qsl(parsed_path.query)
         print(parsed_path)
+        print(parsed_path.query)
         print(query)
-        self.wfile.write(bytes("Post!" + request_id, "utf8"))
+
+        status = "Hit " if True else "Miss"
+
+        self.wfile.write(bytes("Accept" + "", "utf8"))
         return
 
 def run():
-    print('starting Server...')
+    print('starting Battleship...')
 
-    destroyer = Ship(1,2,3,4,5, "Destroyer")
+    destroyer = Ship(1,2,3,4, ShipType.Destroyer)
     print(Ship.location)
     print(Ship.location[0])
-    print(Ship.name)
-    # Server settings
-    # Choose port 8080, for port 80, which is normally used for a http Server, you need root access
-    server_address = ('127.0.0.1', 8081)
+    print(Ship.shipType.name)
+
+    server_address = ('127.0.0.1', 5000)
     httpd = HTTPServer(server_address, testHTTPServer_RequestHandler)
-    print('running Server...')
+
+    print('running Battleship...')
 
 
     d = {}
