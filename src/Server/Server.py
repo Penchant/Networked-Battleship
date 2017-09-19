@@ -6,32 +6,46 @@ from src.Server.Ship import Ship, ShipType
 
 # HTTPRequestHandler class
 class testHTTPServer_RequestHandler(SimpleHTTPRequestHandler):
-    def _set_headers(self):
+    def do_POST(self):
+        # Doesn't do anything with posted data
+
+        parsed_path = urlparse(self.path)
+        query = parse_qsl(parsed_path.query)
+
+        x = int(query[0][1])
+        y = int(query[1][1])
+
+        print(str(x) + str(y))
+
+        if( x > 9  or x < 0 or y > 9 or y < 0):
+            self.send_response(404)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+            print("hello")
+            return
+
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
 
-    def do_POST(self):
-        # Doesn't do anything with posted data
-        self._set_headers()
-        parsed_path = urlparse(self.path)
-        query = parse_qsl(parsed_path.query)
-        print(parsed_path)
-        print(parsed_path.query)
-        print(query)
+        for ship in Ships:
+            if ( ship.__contains__(ship,query)):
+                status = "1"
+                sunk = 1 if ship.sunk(ship) else 0
+            else:
+                status = "0"
+                sunk = 0
 
-        status = "Hit " if True else "Miss"
-
-        self.wfile.write(bytes("Accept" + "", "utf8"))
+        self.wfile.write(bytes("hit=" + status + "&sunk=" + str(sunk), "utf8"))
         return
 
 def run():
     print('starting Battleship...')
 
     destroyer = Ship(1,2,3,4, ShipType.Destroyer)
-    print(Ship.location)
-    print(Ship.location[0])
-    print(Ship.shipType.name)
+    global Ships
+    Ships = [Ship] * 1
+    Ships.append(destroyer)
 
     server_address = ('127.0.0.1', 5000)
     httpd = HTTPServer(server_address, testHTTPServer_RequestHandler)
@@ -53,7 +67,6 @@ def run():
             if x == 10:
                 break
             y = 0
-    print(d)
 
     httpd.serve_forever()
 
