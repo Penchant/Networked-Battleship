@@ -46,6 +46,6 @@ def run():
                 y = y + 1
             x = x + 2
             y = 0
-    #print(d)
+    print(d)
 
 run()
