@@ -17,12 +17,30 @@ class testHTTPServer_RequestHandler(SimpleHTTPRequestHandler):
 
         print(str(x) + str(y))
 
-        if( x > 9  or x < 0 or y > 9 or y < 0):
-            self.send_response(404)
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
-            print("hello")
-            return
+        # if( not x.isdigit or not y.isdigit):
+        #     #HTTP Bad Request
+        #     self.send_response(400)
+        #     self.send_header('Content-type', 'text/html')
+        #     self.end_headers()
+        #     print("hello")
+        #     return
+
+
+        # if( d[(x,y)] == "X" or d[(x,y)] == "H"):
+        #     #HTTP Gone
+        #     self.send_response(410)
+        #     self.send_header('Content-type', 'text/html')
+        #     self.end_headers()
+        #     print("hello")
+        #     return
+
+
+        # if( x > 9  or x < 0 or y > 9 or y < 0):
+        #     self.send_response(404)
+        #     self.send_header('Content-type', 'text/html')
+        #     self.end_headers()
+        #     print("hello")
+        #     return
 
         inShips(x,y, True)
 

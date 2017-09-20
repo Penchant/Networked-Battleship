@@ -11,7 +11,7 @@ class ShipType(Enum):
     Battleship = ("B", 4)
     Cruiser = ("R", 3)
     Submarine = ("S", 3)
-    Destroyer = ("D", 1)
+    Destroyer = ("D", 2)
 
     @classmethod
     def has_value(cls, value):
