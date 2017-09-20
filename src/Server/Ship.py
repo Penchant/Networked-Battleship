@@ -19,10 +19,10 @@ class ShipType(Enum):
     @classmethod
     def shipType(cls, value):
         for item in cls:
-         if(value == item.value[0]):
-             return item
-         else:
-             return None
+            print(value[0])
+            if(value == item.value[0]):
+                return item
+        return None
 
 class Ship:
     # Initializes all properties
@@ -32,7 +32,8 @@ class Ship:
         self.length = shipType.value[1]
         self.hits = 0
 
-        print("hits c" + str(self.hits))
+        self.orientation = ShipOrientation.HorizontalLeft
+
         if(startX == endX):
             if(startX > endX):
                 self.orientation = ShipOrientation.HorizontalLeft
@@ -43,24 +44,28 @@ class Ship:
                 self.orientation = ShipOrientation.VerticalDown
             else :
                 self.orientation = ShipOrientation.VerticalUp
+        print(self.orientation.name)
         return self
 
-    def __contains__(self, item):
+    def __contains__(self, item, hit):
         x = int(item[0])
         y = int(item[1])
+
         print(str(x) + " " + str(y))
 
-        if(self.orientation == ShipOrientation.VerticalUp):
+        if(True or self.orientation == ShipOrientation.VerticalUp):
             if((x == self.location[0]) and (y >= self.location[1]) and (y <= (self.location[1] + self.length-1))):
                 print("hits " + str(self.hits))
-                self.hits += 1
+                if hit:
+                    self.hits = self.hits + 1
                 print("hits " + str(self.hits))
                 return True
             else: return False
         elif (self.orientation == ShipOrientation.VerticalDown):
             if (x == self.location[0] and y >= (self.location[1] - self.length+1) and y <= self.location[1]):
                 print("hits " + str(self.hits))
-                self.hits += 1
+                if hit:
+                    self.hits = self.hits + 1
                 print("hits " + str(self.hits))
                 return True
             else:
@@ -68,7 +73,8 @@ class Ship:
         elif (self.orientation == ShipOrientation.HorizontalRight):
             if ( y == self.location[0] and x >= self.location[1] and x <= (self.location[1] + self.length-1)):
                     print("hits " + str(self.hits))
-                    self.hits+=1
+                    if hit:
+                        self.hits = self.hits + 1
                     print("hits " + str(self.hits))
                     return True
             else:
@@ -76,7 +82,8 @@ class Ship:
         else:
             if (y == self.location[0] and x >= (self.location[1] - self.length + 1) and x <= self.location[1]):
                 print("hits " + str(self.hits))
-                self.hits += 1
+                if hit:
+                    self.hits = self.hits + 1
                 print("hits " + str(self.hits))
                 return True
             else:
