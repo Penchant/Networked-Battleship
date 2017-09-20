@@ -16,6 +16,13 @@ class ShipType(Enum):
     @classmethod
     def has_value(cls, value):
         return (any(value == item.value[0] for item in cls))
+    @classmethod
+    def shipType(cls, value):
+        for item in cls:
+         if(value == item.value[0]):
+             return item
+         else:
+             return None
 
 class Ship:
     # Initializes all properties
@@ -39,8 +46,8 @@ class Ship:
         return self
 
     def __contains__(self, item):
-        x = int(item[0][1])
-        y = int(item[1][1])
+        x = int(item[0])
+        y = int(item[1])
         print(str(x) + " " + str(y))
 
         if(self.orientation == ShipOrientation.VerticalUp):

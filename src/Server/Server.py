@@ -24,28 +24,31 @@ class testHTTPServer_RequestHandler(SimpleHTTPRequestHandler):
             print("hello")
             return
 
+        inShips(x,y)
+
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
 
-        for ship in Ships:
-            if ( ship.__contains__(ship,query)):
-                status = "1"
-                sunk = 1 if ship.sunk(ship) else 0
-            else:
-                status = "0"
-                sunk = 0
-
         self.wfile.write(bytes("hit=" + status + "&sunk=" + str(sunk), "utf8"))
         return
-
+def inShips(x, y):
+    global status
+    global sunk
+    for ship in Ships:
+        if (ship.__contains__(ship, (x, y))):
+            status = "1"
+            sunk = 1 if ship.sunk(ship) else 0
+        else:
+            status = "0"
+            sunk = 0
 def run():
     print('starting Battleship...')
 
-    destroyer = Ship(1,2,3,4, ShipType.Destroyer)
+    global status
+    global sunk
     global Ships
     Ships = [Ship] * 1
-    Ships.append(destroyer)
 
     server_address = ('127.0.0.1', 5000)
     httpd = HTTPServer(server_address, testHTTPServer_RequestHandler)
@@ -116,16 +119,33 @@ def run():
     while cntx < 10:
         cnty = 0
         while cnty < 10:
-            if d1[(cntx,cnty)] == "B":
-                print("Found B")
-            elif d1[(cntx,cnty)] == "C":
-                print("Found C")
-            elif d1[(cntx,cnty)] == "D":
-                print("Found D")
-            elif d1[(cntx,cnty)] == "R":
-                print("Found R")
-            elif d1[(cntx,cnty)] == "S":
-                print("Found S")
+            if (d1[(cntx,cnty)] == "B" and not inShips(cntx, cnty)) :
+                shipType = ShipType.shipType("B")
+                if(d1[(cntx+1,cnty)] == "B"):
+                    Ships.append(Ship(cntx, cnty, cntx + shipType.value[1], cnty, shipType))
+                elif(d1[(cntx,cnty+1)] == "B"):
+                    Ships.append(Ship(cntx, cnty, cntx, cnty + shipType.value[1], shipType))
+            elif (d1[(cntx,cnty)] == "C" and not inShips(cntx, cnty)) :
+                shipType = ShipType.shipType("C")
+                if(d1[(cntx+1,cnty)] == "C"):
+                    Ships.append(Ship(cntx, cnty, cntx + shipType.value[1], cnty, shipType))
+                elif (d1[(cntx, cnty + 1)] == "C"):
+                    Ships.append(Ship(cntx, cnty, cntx, cnty + shipType.value[1], shipType))
+            elif (d1[(cntx,cnty)] == "D" and not inShips(cntx, cnty)) :
+                if (d1[(cntx + 1, cnty)] == "D"):
+                    Ships.append(Ship(cntx, cnty, cntx + shipType.value[1], cnty, shipType))
+                elif (d1[(cntx, cnty + 1)] == "D"):
+                    Ships.append(Ship(cntx, cnty, cntx, cnty + shipType.value[1], shipType))
+            elif (d1[(cntx,cnty)] == "R" and not inShips(cntx, cnty)) :
+                if (d1[(cntx + 1, cnty)] == "R"):
+                    Ships.append(Ship(cntx, cnty, cntx + shipType.value[1], cnty, shipType))
+                elif (d1[(cntx, cnty + 1)] == "R"):
+                    Ships.append(Ship(cntx, cnty, cntx, cnty + shipType.value[1], shipType))
+            elif (d1[(cntx,cnty)] == "S" and not inShips(cntx, cnty)) :
+                if (d1[(cntx + 1, cnty)] == "S"):
+                    Ships.append(Ship(cntx, cnty, cntx + shipType.value[1], cnty, shipType))
+                elif (d1[(cntx, cnty + 1)] == "S"):
+                    Ships.append(Ship(cntx, cnty, cntx, cnty + shipType.value[1], shipType))
             else:
                 print("No ship")
             cnty = cnty + 1
