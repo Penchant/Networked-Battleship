@@ -19,8 +19,8 @@ class ShipType(Enum):
     @classmethod
     def shipType(cls, value):
         for item in cls:
-            print(value[0])
             if(value == item.value[0]):
+                print("fk" + str(item))
                 return item
         return None
 
@@ -29,6 +29,8 @@ class Ship:
     def __new__(self, startX, startY, endX, endY, shipType):
         self.location = (startX, startY, endX, endY)
         self.shipType = shipType
+        print("Making ship")
+        print(self.shipType.name)
         self.length = shipType.value[1]
         self.hits = 0
 
@@ -44,18 +46,15 @@ class Ship:
                 self.orientation = ShipOrientation.VerticalDown
             else :
                 self.orientation = ShipOrientation.VerticalUp
-        print(self.orientation.name)
         return self
 
     def __contains__(self, item, hit):
         x = int(item[0])
         y = int(item[1])
-
-        print(str(x) + " " + str(y))
-
+        return False
         if(True or self.orientation == ShipOrientation.VerticalUp):
             if((x == self.location[0]) and (y >= self.location[1]) and (y <= (self.location[1] + self.length-1))):
-                print("hits " + str(self.hits))
+                print("hits " + self.shipType.name + str(self.hits))
                 if hit:
                     self.hits = self.hits + 1
                 print("hits " + str(self.hits))
@@ -63,7 +62,7 @@ class Ship:
             else: return False
         elif (self.orientation == ShipOrientation.VerticalDown):
             if (x == self.location[0] and y >= (self.location[1] - self.length+1) and y <= self.location[1]):
-                print("hits " + str(self.hits))
+                print("hits " + self.shipType.name + str(self.hits))
                 if hit:
                     self.hits = self.hits + 1
                 print("hits " + str(self.hits))
@@ -72,7 +71,7 @@ class Ship:
                 return False
         elif (self.orientation == ShipOrientation.HorizontalRight):
             if ( y == self.location[0] and x >= self.location[1] and x <= (self.location[1] + self.length-1)):
-                    print("hits " + str(self.hits))
+                    print("hits " + self.shipType.name + str(self.hits))
                     if hit:
                         self.hits = self.hits + 1
                     print("hits " + str(self.hits))
@@ -81,7 +80,7 @@ class Ship:
                     return False
         else:
             if (y == self.location[0] and x >= (self.location[1] - self.length + 1) and x <= self.location[1]):
-                print("hits " + str(self.hits))
+                print("hits " + self.shipType.name + str(self.hits))
                 if hit:
                     self.hits = self.hits + 1
                 print("hits " + str(self.hits))
@@ -89,7 +88,7 @@ class Ship:
             else:
                 return False
     def sunk(self):
-        print(str(self.hits))
+        print('sunk: ' + str(self.hits))
         return self.hits == 2*self.length
 
     def validate(self):
