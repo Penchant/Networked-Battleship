@@ -12,19 +12,38 @@ class testHTTPServer_RequestHandler(SimpleHTTPRequestHandler):
         parsed_path = urlparse(self.path)
         query = parse_qsl(parsed_path.query)
 
+        x = query[0][1]
+        y = query[1][1]
+
+        print('query: ' + str(x) + str(y))
+
+        if( not str(x).isdigit() or not str(y).isdigit()):
+            #HTTP Bad Request
+            self.send_response(400)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+            return
+
         x = int(query[0][1])
         y = int(query[1][1])
 
-        print(str(x) + str(y))
-
-        if( x > 9  or x < 0 or y > 9 or y < 0):
+        if (x > 9 or x < 0 or y > 9 or y < 0):
             self.send_response(404)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
-            print("hello")
             return
 
-        inShips(x,y)
+        if( d1[(x,y)] == "X" or d1[(x,y)] == "H"):
+            #HTTP Gone
+            self.send_response(410)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+            return
+
+
+
+
+        inShips(x,y, True)
 
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
@@ -32,23 +51,30 @@ class testHTTPServer_RequestHandler(SimpleHTTPRequestHandler):
 
         self.wfile.write(bytes("hit=" + status + "&sunk=" + str(sunk), "utf8"))
         return
-def inShips(x, y):
+def inShips(x, y, hit):
     global status
     global sunk
     for ship in Ships:
-        if (ship.__contains__(ship, (x, y))):
+        if ( ship.__contains__(ship, (x, y), hit)):
             status = "1"
-            sunk = 1 if ship.sunk(ship) else 0
+            sunk = ship.shipType.value[1] if ship.sunk(ship) else "0"
         else:
             status = "0"
             sunk = 0
+    return
+def resetShips():
+    print('Resetting ships')
+    for ship in Ships:
+        ship.hits = 0
+        print(ship.shipType.name)
+    return
 def run():
     print('starting Battleship...')
 
     global status
     global sunk
     global Ships
-    Ships = [Ship] * 1
+    Ships = []
 
     server_address = ('127.0.0.1', 5000)
     httpd = HTTPServer(server_address, testHTTPServer_RequestHandler)
@@ -85,7 +111,7 @@ def run():
     print(boardC)
 
 
-
+    global d1
     d1 = {}
     with open("Btest.txt") as f:
         x = 0
@@ -119,37 +145,43 @@ def run():
     while cntx < 10:
         cnty = 0
         while cnty < 10:
-            if (d1[(cntx,cnty)] == "B" and not inShips(cntx, cnty)) :
+            if (d1[(cntx,cnty)] == "B" and not inShips(cntx, cnty, False)) :
                 shipType = ShipType.shipType("B")
-                if(d1[(cntx+1,cnty)] == "B"):
+                if(cntx < 9 and d1[(cntx+1,cnty)] == "B"):
                     Ships.append(Ship(cntx, cnty, cntx + shipType.value[1], cnty, shipType))
-                elif(d1[(cntx,cnty+1)] == "B"):
+                elif(cnty < 9 and d1[(cntx,cnty+1)] == "B"):
                     Ships.append(Ship(cntx, cnty, cntx, cnty + shipType.value[1], shipType))
-            elif (d1[(cntx,cnty)] == "C" and not inShips(cntx, cnty)) :
+            elif (cnty < 9 and d1[(cntx,cnty)] == "C" and not inShips(cntx, cnty, False)) :
                 shipType = ShipType.shipType("C")
-                if(d1[(cntx+1,cnty)] == "C"):
+                if(cntx < 9 and d1[(cntx+1,cnty)] == "C"):
                     Ships.append(Ship(cntx, cnty, cntx + shipType.value[1], cnty, shipType))
-                elif (d1[(cntx, cnty + 1)] == "C"):
+                elif (cnty < 9 and d1[(cntx, cnty + 1)] == "C"):
                     Ships.append(Ship(cntx, cnty, cntx, cnty + shipType.value[1], shipType))
-            elif (d1[(cntx,cnty)] == "D" and not inShips(cntx, cnty)) :
-                if (d1[(cntx + 1, cnty)] == "D"):
+            elif (d1[(cntx,cnty)] == "D" and not inShips(cntx, cnty, False)) :
+                shipType = ShipType.shipType("D")
+                if (cntx < 9 and d1[(cntx + 1, cnty)] == "D"):
                     Ships.append(Ship(cntx, cnty, cntx + shipType.value[1], cnty, shipType))
-                elif (d1[(cntx, cnty + 1)] == "D"):
+                elif (cnty < 9 and d1[(cntx, cnty + 1)] == "D"):
                     Ships.append(Ship(cntx, cnty, cntx, cnty + shipType.value[1], shipType))
-            elif (d1[(cntx,cnty)] == "R" and not inShips(cntx, cnty)) :
-                if (d1[(cntx + 1, cnty)] == "R"):
+            elif (d1[(cntx,cnty)] == "R" and not inShips(cntx, cnty, False)) :
+                shipType = ShipType.shipType("R")
+                if (cntx < 9 and d1[(cntx + 1, cnty)] == "R"):
                     Ships.append(Ship(cntx, cnty, cntx + shipType.value[1], cnty, shipType))
-                elif (d1[(cntx, cnty + 1)] == "R"):
+                elif (cnty < 9 and d1[(cntx, cnty + 1)] == "R"):
                     Ships.append(Ship(cntx, cnty, cntx, cnty + shipType.value[1], shipType))
-            elif (d1[(cntx,cnty)] == "S" and not inShips(cntx, cnty)) :
-                if (d1[(cntx + 1, cnty)] == "S"):
+            elif (d1[(cntx,cnty)] == "S" and not inShips(cntx, cnty, False)) :
+                shipType = ShipType.shipType("S")
+                if (cntx < 9 and d1[(cntx + 1, cnty)] == "S"):
                     Ships.append(Ship(cntx, cnty, cntx + shipType.value[1], cnty, shipType))
-                elif (d1[(cntx, cnty + 1)] == "S"):
+                elif (cnty < 9 and d1[(cntx, cnty + 1)] == "S"):
                     Ships.append(Ship(cntx, cnty, cntx, cnty + shipType.value[1], shipType))
-            else:
-                print("No ship")
             cnty = cnty + 1
         cntx = cntx + 1
+
+    for ship in Ships:
+        print("fuck" + str(ship.shipType))
+
+    # resetShips()
 
     httpd.serve_forever()
 
